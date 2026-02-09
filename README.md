@@ -1,52 +1,44 @@
-# Master thesis
+# Tensor-valued encoding using spiral k-space trajectories
 
-## Code for master thesis on tensor-valued encoding using spiral k-space trajectories
+Sequence design is done with Pulseq [1] (with Python's toolbox PyPulseq [2]) and focusses on the q-space trajectory imaging approach [3] with protocols from Ref. [4].
+Waveforms are based on the double-rotation gradient waveform (gDOR) [5] as well as on magic-angle spinning of the q-vector (qMAS) [6].
 
-The repository includes the Python-files for the DIVIDE [1] and QTI [2] sequences using Pulseq [3] (with Python's toolbox PyPulseq [4])
-and extra code for analysis that is done in the master thesis.
+The sequences are based on the diffusion sequence by Veldmann et al. [7] (https://github.com/mrphysics-bonn/AxonDiameter). Reconstruction is done with the workflow proposed in [8] (https://github.com/mrphysics-bonn/python-ismrmrd-reco).
 
-The sequences are based on the diffusion sequence by Veldmann et al. [5] as well as the preprocessing-pipeline (https://github.com/mrphysics-bonn/AxonDiameter). Reconstruction is done with the workflow proposed in [6].
-
-### Structure
+## Structure
 
 - 'sequences':
-	- 'write\_divide.py': sequence design according to the DIVIDE approach ('divide\_helper.py' and 'diffusion.py' is needed), adapted from [5]
-	- 'write\_qti.py': sequence design according to the QTI approach ('divide\_helper.py' and 'diffusion.py' is needed), adapted from [5]
-	- 'NOW': folder containing the gradient waveforms of the three different sequences created with the NOW-toolbox [7] using the script 'scripted\_NOW\_Example.m', adapted from [7]
-	- 'qMasOptimization.m': contains the optimization with Matlab (constraints placed in 'nlcon.m')
-	- 'integral\_calculator.py': the calculations of the correction factors to consider the finite slew rate of the gradients
-	- 'pulses', 'prot.py', 'pulseq\_helper.py': helper-functions for sequence design and pulse design, adopted from [5,6]
-	- 'gre\_refscan\_B0.py': GRE prescan for B0 mapping, adopted from [5]
+	- 'write\_tve.py': sequence design according to the TVE approach, adapted from [7]
+	- 'qMasOptimization.m': contains the qMAS optimization with Matlab
+	- 'nlcon.m': constraints for the qMAS optimization with Matlab
+	- 'gre\_refscan\_B0.py': GRE prescan for B0 mapping, adopted from [7]
+	- 'helper': folder containing helper-functions for sequence design
 	- 'tve.yml': YAML-file to create conda environment for sequence design
-- 'analysis':
-	- 'process\_spiral\_Fast.sh': preprocessing of the diffusion-weighted volumes, together with the structural image using 't1_processing.py', adapted from [5]
-	- 'dtd_workflow.py': step-by-step instructions on how to create diffusion-tensor-distribution-metric maps using the DIVIDE [1] and QTI [2] approach, including:
-		- 'myWorkflow.m': analysis with the DIVIDE approach using the md-dmri toolbox [8]
-		- 'segmentation\_pipe\_T1.sh': registration and segmentation of the created metric maps using 'map\_segmentation\_T1.sh'; the metric values for each roi (see folder 'rois') are saved into corresponding dataframes with 'into\_dataframe.py'
-		- 'csv_files': folder containing the dataframes belonging to the DIVIDE and QTI comparison ('all'), to the B-tensor calculation comparison ('btens'), to the test-retest measurements ('retest') and to the DTI measurement for comparison of the macroscopic metrics ('dti1')
+	- 'qti_waveforms':
+		- 'from_optimization_to_seq': folder to store designed diffusion gradients (here: waveforms based on gDOR [5])
 
-### Requirements
+## Requirements
 
 - for sequence design:
 	- conda env create -f sequences/tve.yml --> conda activate tve
 	- MATLAB (Optimization toolbox [9] needed)
 
-### References
+## References
 
-[1] Lasič, Samo, et al. ‘Microanisotropy imaging: quantification of microscopic diffusion anisotropy and orientational order parameter by diffusion MRI with magic-angle spinning of the q-vector.’ In: Frontiers in Physics 2 (2014): 11.
+[1] Layton KJ, Kroboth S, Jia F, et al. Pulseq: A rapid and hardware-independent pulse sequence prototyping framework: Rapid Hardware-Independent Pulse Sequence Prototyping. Magn Reson Med. 2017;77(4):1544-1552. doi:10.1002/mrm.26235
 
-[2] Westin, Carl-Fredrik, et al. ‘Q-space trajectory imaging for multidimensional diffusion MRI of the human brain.’ Neuroimage 135 (2016): 345-362.
+[2] Keerthi Sravan Ravi, Sairam Geethanath and John Thomas Vaughan. ‘PyPulseq: A Python Package for MRI Pulse Sequence Design’. In: Journal of Open Source Software 4.42 (2019), p. 1725
 
-[3] Kelvin J. Layton et al. ‘Pulseq: A rapid and hardware-independent pulse sequence prototyping framework’. In: Magnetic Resonance in Medicine 77.4 (2017), pp. 1544–1552.
+[3] Westin CF, Knutsson H, Pasternak O, et al. Q-space trajectory imaging for multidimensional diffusion MRI of the human brain. NeuroImage. 2016;135:345-362. doi:10.1016/j.neuroimage.2016.02.039
 
-[4] Keerthi Sravan Ravi, Sairam Geethanath and John Thomas Vaughan. ‘PyPulseq: A Python Package for MRI Pulse Sequence Design’. In: Journal of Open Source Software 4.42 (2019), p. 1725
+[4] Morez J, Szczepankiewicz F, Den Dekker AJ, Vanhevel F, Sijbers J, Jeurissen B. Optimal experimental design and estimation for q‐space trajectory imaging. Human Brain Mapping. 2023;44(4):1793-1809. doi:10.1002/hbm.26175
 
-[5] Marten Veldmann et al. ‘Spiral readout improves in vivo MR axon radius estimation in human white matter’. In: Proceedings of the International Society for Magnetic Resonance in Medicine Annual Meeting. Vol. 31. Toronto, Canada, 2023, p. 5172.
+[5] Jiang H, Svenningsson L, Topgaard D. Multidimensional encoding of restricted and anisotropic diffusion by double rotation of the q vector. Magn Reson. 2023;4(1):73-85. doi:10.5194/mr-4-73-2023
 
-[6] Marten Veldmann et al. ‘Open-source MR imaging and reconstruction workflow’. In: Magnetic resonance in medicine 88.6 (2022), pp. 2395–2407.
+[6] Eriksson S, Lasic S, Topgaard D. Isotropic diffusion weighting in PGSE NMR by magic-angle spinning of the q-vector. Journal of Magnetic Resonance. 2013;226:13-18. doi:10.1016/j.jmr.2012.10.015
 
-[7] Sjölund J, Szczepankiewicz F, Nilsson M, Topgaard D, Westin C-F, and Knutsson H. ‘Constrained optimization of gradient waveforms for generalized diffusion encoding’. In: Journal of Magnetic Resonance 261 (2015), 157-168.
+[7] Veldmann M,  Edwards LJ, Pine KJ, et al. Improving MR axon radius estimation in human white matter using spiral acquisition and field monitoring. Magn Reson Med. 2024;1-15. doi: 10.1002/mrm.30180
 
-[8] Markus Nilsson, Filip Szczepankiewicz, Björn Lampinen, André Ahlgren, João P. de Almeida Martins, Samo Lasic, Carl-Fredrik Westin, and Daniel Topgaard. An open-source framework for analysis of multidimensional diffusion MRI data implemented in MATLAB. Proc. Intl. Soc. Mag. Reson. Med. (26), Paris, France, 2018.
+[8] Veldmann M, Ehses P, Chow K, Nielsen J, Zaitsev M, Stöcker T. OPEN‐SOURCE MR imaging and reconstruction workflow. Magnetic Resonance in Med. 2022;88(6):2395-2407. doi:10.1002/mrm.29384
 
 [9] MATLAB Optimization Toolbox. The MathWorks, Natick, MA, USA. 2019.
