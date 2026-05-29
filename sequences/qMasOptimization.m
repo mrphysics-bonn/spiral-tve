@@ -1,6 +1,6 @@
 function [min_spacing, x_solution] = qMasOptimization(b_val_max, refoc_dur, includePTE, maxgrad, maxslew)
     % local optimization with fmincon (using multiple starting points to make it 'global')
-    % input parameters: b_val_max [s/mm²]; refoc_dur [s]; includePTE (bool)
+    % input parameters: b_val_max [s/mm²]; refoc_dur [s]; includePTE (bool); maxgrad [T/m]; maxslew [T/m/s]
 
     % constant
     gamma = 42576000; % Hz/T

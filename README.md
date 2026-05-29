@@ -21,7 +21,34 @@ The sequences are based on the diffusion sequence by Veldmann et al. [7] (https:
 
 - for sequence design:
 	- conda env create -f sequences/tve.yml --> conda activate tve
-	- MATLAB (Optimization toolbox [9] needed)
+	- MATLAB (Optimization toolbox [9] needed) --> code was tested with MATLAB version R2018b
+
+## Usage
+
+- Clone the repository and install the requirements.
+- To create a Pulseq file for your sequence, open the Python script 'write\_tve.py' in your preferred browser and change the sequence parameters to meet your desired sequence.
+- After execution of the Python script, the following outputs will be created:
+	- A sequence file (.seq) and the protocol file for reconstruction [8] (.h5) will be created in the folder, in which the Python script is located.
+	- A numpy file, containing the b-tensor for each diffusion volume, will be created in the folder 'qti_optimization/btens'. The folder will be created if it does not exist.
+	- If 'plotSpectrum=True' Figures showing the gradient waveforms and the q-space trajectories will be created.
+	- If 'testCrushingMoments=True' Figures showing the spoiling moment for each diffusion volume before the 180° pulse are created to ensure a spoiling moment of two k-spaces.
+
+## MATLAB optimization
+
+The selection of the qMAS sequence ('diffSeq=0') invokes a call to a MATLAB function 'qMASOptimization.m', which uses MATLAB's local optimization tool fmincon to create the qMAS gradients for a minimal echo time. The optimization uses the script 'nlcon.m' internally to define nonlinear-constraints to not overstep gradient scanner limits.
+
+The MATLAB function 'qMASOptimization.m is called within the Python script with the module 'subprocess'.
+
+To test if the optimization works as intended, it it recommended to test the optimization separately within the command-window of the MATLAB-interface. An example call to the function with the inputs for the qMAS sequence from the in vivo measurements of the paper is as follows:
+
+`[min_spacing, x_solution] = qMasOptimization(b_val_max=1400, refoc_dur=10.48, includePTE=1, maxgrad=70e-3, maxslew=190)`
+
+The optimization should finish after approximately one minute with the following outputs: 
+[0.0771, 2468315.3445479, 7604073656.6792, 0.0088600554968332]
+- min\_spacing = 0.0771 [s] minimum spacing between the trapezoidal gradients of the qMAS waveform
+- system\_max\_grad = 2468315.3445479; % [Hz/m] (gradient amplitudes [T/m] multiplied by gamma = 42576000 [Hz/T]) maximum Euclidean gradient amplitude of the qMAS waveform
+- system\_max\_slew = 7604073656.6792; % [1/ms²] (gradient slew rate [T/m/s] multiplied by gamma = 42576000 [Hz/T]) maximum slew rate of the qMAS waveform
+- delta = 0.0088600554968332; [s] duration of the trapezoidal gradient of the qMAS waveform
 
 ## References
 

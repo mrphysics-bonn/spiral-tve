@@ -1,5 +1,7 @@
 function [c,ceq] = nlcon(x, b_val_max, refoc_dur, includePTE, maxgrad, maxslew)
-    
+    % nonlinear constraints for waveform design to consider gradient limits
+    % input parameters: x (optimization variables: system_max_grad [Hz/m], system\_max\_slew [1/ms²], delta [s]), b_val_max [s/mm²]; refoc_dur [s]; includePTE (bool); maxgrad [T/m]; maxslew [T/m/s]
+
     gamma = 42576000; % Hz/T
     ceq = [];
 

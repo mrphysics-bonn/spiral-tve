@@ -126,8 +126,8 @@ measure_delay   = False        # if False start skope measurement directly befor
 sync_scans      = 10           # number of Skope sync_scans   
 
 # Diffusion
-diff_slewrate   = 190          # diffusion gradient slewrate
-diff_maxgrad    = 70           # diffusion gradient max grad strength
+diff_slewrate   = 190          # diffusion gradient slewrate [T/m/s]
+diff_maxgrad    = 70           # diffusion gradient max grad strength [mT/m]
 diffSeq         = 1            # diffusion sequence; 0: qMas with tuned LTE (PTE,STE,LTE), 1: gDOR - with 180° pulse and separate LTE and separate PTE (PTE,LTE)
 qti_protocol    = "Q2"      # "Q2", "Q3"; None: the default protocol will be used for the corresponding NOW option
 if diffSeq == 1 or qti_protocol == "Q2":
@@ -1345,6 +1345,9 @@ prot.append_array("bDeltas", np.asarray(bDelta_list, dtype=np.float32))
 
 # save calculated b-tensors
 btens = np.asarray(btens)
+
+if not os.path.isdir('qti_waveforms/btens'):
+    os.makedirs('qti_waveforms/btens')
 np.save('qti_waveforms/btens/btens_'+date+'_'+seq_name, btens)   
 
 if skope:
@@ -1526,3 +1529,4 @@ for elem in btens:
 # save seq
 seqfile = f"{filename}.seq"
 seq.write(seqfile)
+prot.close()
